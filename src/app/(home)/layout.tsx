@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import '@fontsource-variable/outfit';
-import "./globals.css";
+import "../globals.css";
 import { CssVarsProvider } from '@mui/joy/styles';
 import Sidebar from "./components/Sidebar";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,6 @@ export default function RootLayout({
           <div className="flex " >
             <Sidebar></Sidebar>
             <div className="flex-grow" >
-
               {children}
             </div>
           </div>
