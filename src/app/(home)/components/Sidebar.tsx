@@ -72,7 +72,7 @@ export default function Sidebar() {
             Icon: Home,
         },
         {
-            name: 'Personal Tag',
+            name: 'My Tags',
             path: '/personal-tag',
             Icon: Tag
         },
@@ -88,7 +88,7 @@ export default function Sidebar() {
             children: [
                 {
                     path: '/essential-oil',
-                    name: 'Essential',
+                    name: 'Essential Oil',
                 },
                 {
                     path: '/tag',
