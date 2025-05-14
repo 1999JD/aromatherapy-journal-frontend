@@ -6,7 +6,8 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import Divider from '@mui/joy/Divider';
 import Typography from '@mui/joy/Typography';
 import IconButton from '@mui/joy/IconButton';
-import Link from '@mui/joy/Link';
+import Link from 'next/link';
+
 import { HeartPlus } from 'lucide-react';
 import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
@@ -17,7 +18,7 @@ export default function ItemCard() {
         <Card variant="outlined" >
             <CardContent>
                 <Typography level="title-md">
-                    <Link href="#multiple-actions" overlay underline="none">
+                    <Link href="/essential-oil/1">
                         Highland Lavender
                     </Link>
                 </Typography>
