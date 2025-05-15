@@ -28,6 +28,8 @@ import {
 import { closeSidebar } from './utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
+import icon from '../../assets/favicon-32x32.png'
 
 function Toggler({
     defaultExpanded = false,
@@ -154,9 +156,17 @@ export default function Sidebar() {
                 }}
                 onClick={() => closeSidebar()}
             />
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Typography level="title-lg">Aromatherapy Journal</Typography>
-            </Box>
+            <Link href="/" >
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <Image
+                        src={icon}
+                        width={32}
+                        height={32}
+                        alt="logo"
+                    />
+                    <Typography level="title-lg">Aromatherapy Journal</Typography>
+                </Box>
+            </Link>
             <Box
                 sx={{
                     minHeight: 0,

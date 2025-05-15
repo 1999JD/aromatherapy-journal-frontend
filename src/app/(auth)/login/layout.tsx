@@ -20,6 +20,8 @@ import {
     Badge as BadgeRoundedIcon
 } from 'lucide-react'
 import GoogleIcon from './components/GoogleIcon';
+import Image from 'next/image'
+import logo from '../../assets/android-chrome-192x192.png'
 
 interface FormElements extends HTMLFormControlsCollection {
     email: HTMLInputElement;
@@ -30,29 +32,6 @@ interface SignInFormElement extends HTMLFormElement {
     readonly elements: FormElements;
 }
 
-function ColorSchemeToggle(props: IconButtonProps) {
-    const { onClick, ...other } = props;
-    const { mode, setMode } = useColorScheme();
-    const [mounted, setMounted] = React.useState(false);
-
-    React.useEffect(() => setMounted(true), []);
-
-    return (
-        <IconButton
-            aria-label="toggle light/dark mode"
-            size="sm"
-            variant="outlined"
-            disabled={!mounted}
-            onClick={(event) => {
-                setMode(mode === 'light' ? 'dark' : 'light');
-                onClick?.(event);
-            }}
-            {...other}
-        >
-            {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-        </IconButton>
-    );
-}
 
 const customTheme = extendTheme({});
 
@@ -105,12 +84,15 @@ export default function SignInLayout({
                                 sx={{ py: 3, display: 'flex', justifyContent: 'space-between' }}
                             >
                                 <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-                                    <IconButton variant="soft" color="primary" size="sm">
-                                        <BadgeRoundedIcon />
-                                    </IconButton>
-                                    <Typography level="title-lg">Company logo</Typography>
+                                    <Image
+                                        src={logo}
+                                        width={64}
+                                        height={64}
+                                        alt="logo"
+                                    />
+                                    <Typography level="title-lg">Aromatherapy Journal
+                                    </Typography>
                                 </Box>
-                                <ColorSchemeToggle />
                             </Box>
                             <Box
                                 component="main"
@@ -208,7 +190,7 @@ export default function SignInLayout({
                             </Box>
                             <Box component="footer" sx={{ py: 3 }}>
                                 <Typography level="body-xs" sx={{ textAlign: 'center' }}>
-                                    © Your company {new Date().getFullYear()}
+                                    © Aromatherapy Journal {new Date().getFullYear()}
                                 </Typography>
                             </Box>
                         </Box>
