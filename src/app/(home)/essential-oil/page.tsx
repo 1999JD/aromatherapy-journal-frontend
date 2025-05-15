@@ -1,12 +1,10 @@
-import ItemCard from "./components/ItemCard";
 import { Box, IconButton, Input, Typography } from "@mui/joy";
 import { Search } from 'lucide-react';
-
-
+import RenderList from "./components/RenderLIst";
 export default function EssentialOilList() {
     return (
         <div className="container mx-auto py-8 px-4 ">
-            <Typography level="h1"  sx={{marginBottom: '1rem'}} >Essential Oils</Typography>
+            <Typography level="h1" sx={{ marginBottom: '1rem' }} >Essential Oils</Typography>
             <Input
                 size="sm"
                 variant="outlined"
@@ -22,28 +20,8 @@ export default function EssentialOilList() {
                     width: '360px'
                 }}
             />
+            <RenderList />
 
-            <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 2 }}>
-
-                    <Box sx={{ gridColumn: 'span 4' }}>
-                        <ItemCard />
-                    </Box>
-                    <Box sx={{ gridColumn: 'span 4' }}>
-                        <ItemCard />
-                    </Box>
-                    <Box sx={{ gridColumn: 'span 4' }}>
-                        <ItemCard />
-                    </Box>
-                    <Box sx={{ gridColumn: 'span 4' }}>
-                        <ItemCard />
-                    </Box>
-                    <Box sx={{ gridColumn: 'span 4' }}>
-                        <ItemCard />
-                    </Box>
-                </Box>
-
-            </main>
 
         </div>
     );

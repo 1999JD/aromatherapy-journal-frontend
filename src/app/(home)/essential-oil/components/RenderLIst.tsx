@@ -1,31 +1,27 @@
-import * as React from 'react';
-import AspectRatio from '@mui/joy/AspectRatio';
+'use client'
+import { Box, IconButton, Input, Typography, Chip } from "@mui/joy";
+import { useGetEssentialOilList } from "@/app/hooks/api/useEssentialOil"
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CardOverflow from '@mui/joy/CardOverflow';
 import Divider from '@mui/joy/Divider';
-import Typography from '@mui/joy/Typography';
-import IconButton from '@mui/joy/IconButton';
 import Link from 'next/link';
-
+import { type EssentialOilVO } from '@/app/hooks/api/useEssentialOil';
 import { HeartPlus, SquareArrowOutUpRight } from 'lucide-react';
-import Box from '@mui/joy/Box';
-import Chip from '@mui/joy/Chip';
 
 
-export default function ItemCard() {
+function ItemCard({ data }: {
+    data: EssentialOilVO
+}) {
     return (
         <Card variant="outlined" >
             <CardContent>
                 <Typography level="title-md">
-                    Highland Lavender
+                    {data.title}
                 </Typography>
                 <Typography level="body-sm" className="line-clamp-3"
                     style={{ display: '-webkit-box' }}>
-                    Highland True Lavender Essential Oil is distilled from Lavandula angustifolia grown at high altitudes.
-                    Its gentle floral aroma promotes deep relaxation and emotional balance.
-                    Rich in esters, it soothes the skin and supports restful sleep.
-                    Ideal for aromatherapy, skincare, and natural stress relief.
+                    {data.description}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
 
@@ -35,7 +31,7 @@ export default function ItemCard() {
                         color="primary"
                         sx={{ bgcolor: '' }}
                     >
-                        <Link href="/essential-oil/1">
+                        <Link href={`/essential-oil/${data.id}`}>
                             <SquareArrowOutUpRight />
                         </Link>
                     </IconButton>
@@ -55,16 +51,40 @@ export default function ItemCard() {
             <CardOverflow>
                 <Divider inset="context" />
                 <CardContent orientation="horizontal" >
-                    <div className="line-clamp-2 " >
-                        <Chip className="mx-0.5 my-0.5" >Stomache</Chip>
-                        <Chip className="mx-0.5 my-0.5">Head Ache</Chip>
-                        <Chip className="mx-0.5 my-0.5">sleep</Chip>
-                        <Chip className="mx-0.5 my-0.5">sleep</Chip>
-                        <Chip className="mx-0.5 my-0.5">atopic eczema</Chip>
-                        <Chip className="mx-0.5 my-0.5">atopic eczema</Chip>
+                    <div className="line-clamp-1 " >
+                        {data.tags.map((tag, index) =>
+                        (<Chip key={`${data.id}-tag-${index}`}
+                            sx={{
+                                backgroundColor: tag.color,
+                                margin: 0.25,
+                            }}
+                        >
+                            {tag.name}
+                        </Chip>))}
                     </div>
                 </CardContent>
             </CardOverflow>
         </Card>
     );
+}
+
+export default function EssentialOilList() {
+    const { data } = useGetEssentialOilList()
+
+    return (
+        <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 2 }}>
+                {data?.map((item) => (
+                    <Box key={item.id} sx={{ gridColumn: 'span 4' }}>
+                        <ItemCard data={
+                            item
+                        } />
+                    </Box>
+                ))}
+            </Box>
+
+        </main>
+
+    )
+
 }
