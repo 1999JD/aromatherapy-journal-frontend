@@ -8,7 +8,7 @@ import Typography from '@mui/joy/Typography';
 import IconButton from '@mui/joy/IconButton';
 import Link from 'next/link';
 
-import { HeartPlus } from 'lucide-react';
+import { HeartPlus, SquareArrowOutUpRight } from 'lucide-react';
 import Box from '@mui/joy/Box';
 import Chip from '@mui/joy/Chip';
 
@@ -18,9 +18,7 @@ export default function ItemCard() {
         <Card variant="outlined" >
             <CardContent>
                 <Typography level="title-md">
-                    <Link href="/essential-oil/1">
-                        Highland Lavender
-                    </Link>
+                    Highland Lavender
                 </Typography>
                 <Typography level="body-sm" className="line-clamp-3"
                     style={{ display: '-webkit-box' }}>
@@ -29,12 +27,23 @@ export default function ItemCard() {
                     Rich in esters, it soothes the skin and supports restful sleep.
                     Ideal for aromatherapy, skincare, and natural stress relief.
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
+
+                    <IconButton
+                        size="sm"
+                        variant="plain"
+                        color="primary"
+                        sx={{ bgcolor: '' }}
+                    >
+                        <Link href="/essential-oil/1">
+                            <SquareArrowOutUpRight />
+                        </Link>
+                    </IconButton>
                     <IconButton
                         size="sm"
                         variant="plain"
                         color="danger"
-                        sx={{ ml: 'auto', bgcolor: '' }}
+                        sx={{ bgcolor: '' }}
                     >
                         <HeartPlus />
                     </IconButton>

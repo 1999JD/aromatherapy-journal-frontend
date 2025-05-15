@@ -11,7 +11,7 @@ export default function AdminEssentialOil() {
     return (
         <CssVarsProvider disableTransitionOnChange>
             <CssBaseline />
-            <div className="container py-8 px-4 ">
+            <div className="container mx-auto py-8 px-4 ">
 
                 <Typography level="h1"  sx={{marginBottom: '1rem'}} >Manage Essential Oils</Typography>
 
