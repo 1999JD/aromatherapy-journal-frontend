@@ -25,7 +25,6 @@ import {
     SunDim as BrightnessAutoRoundedIcon,
     ChevronDown as KeyboardArrowDownIcon,
 } from 'lucide-react'
-import ColorSchemeToggle from './ColorSchemeToggle';
 import { closeSidebar } from './utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation'
@@ -156,11 +155,7 @@ export default function Sidebar() {
                 onClick={() => closeSidebar()}
             />
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <IconButton variant="soft" color="primary" size="sm">
-                    <BrightnessAutoRoundedIcon />
-                </IconButton>
                 <Typography level="title-lg">Aromatherapy Journal</Typography>
-                <ColorSchemeToggle sx={{ ml: 'auto' }} />
             </Box>
             <Box
                 sx={{
