@@ -13,7 +13,7 @@ export default function AdminEssentialOil() {
             <CssBaseline />
             <div className="container py-8 px-4 ">
 
-                <Typography level="h1" className="mb-2" >Manage Essential Oils</Typography>
+                <Typography level="h1"  sx={{marginBottom: '1rem'}} >Manage Essential Oils</Typography>
 
                 <Box sx={{ display: 'flex' }}>
                     <Box

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import '@fontsource-variable/outfit';
 import "../globals.css";
-import { CssVarsProvider } from '@mui/joy/styles';
 import Sidebar from "./components/Sidebar";
+import Providers from "@/providers/index";
 
 
 const geistSans = Geist({
@@ -31,15 +31,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CssVarsProvider disableTransitionOnChange>
+        <Providers>
           <div className="flex " >
             <Sidebar></Sidebar>
             <div className="flex-grow" >
               {children}
             </div>
           </div>
-        </CssVarsProvider>
+        </Providers>
       </body>
-    </html>
+    </html >
   );
 }

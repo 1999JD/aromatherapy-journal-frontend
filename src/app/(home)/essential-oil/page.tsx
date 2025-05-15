@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 export default function EssentialOilList() {
     return (
         <div className="container py-8 px-4 ">
-            <Typography level="h1" className="mb-2" >Essential Oils</Typography>
+            <Typography level="h1"  sx={{marginBottom: '1rem'}} >Essential Oils</Typography>
             <Input
                 size="sm"
                 variant="outlined"

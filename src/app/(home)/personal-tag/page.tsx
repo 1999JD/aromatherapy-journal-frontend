@@ -5,7 +5,7 @@ import AddForm from "./components/AddForm";
 export default function PersonalTag() {
     return (
         <div className="container py-8 px-4 ">
-            <Typography level="h1" className="mb-2" >My Tags</Typography>
+            <Typography level="h1"  sx={{marginBottom: '1rem'}} >My Tags</Typography>
             <Input
                 size="sm"
                 variant="outlined"

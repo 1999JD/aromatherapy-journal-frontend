@@ -5,7 +5,7 @@ import AddForm from "./components/AddForm";
 export default function AdminTag() {
     return (
         <div className="container py-8 px-4 ">
-            <Typography level="h1" className="mb-2" >Manage Global Tags</Typography>
+            <Typography level="h1"  sx={{marginBottom: '1rem'}} >Manage Global Tags</Typography>
             <Input
                 size="sm"
                 variant="outlined"
