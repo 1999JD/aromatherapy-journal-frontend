@@ -75,7 +75,7 @@ export default function EssentialOilList() {
         <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: 2 }}>
                 {data?.map((item) => (
-                    <Box key={item.id} sx={{ gridColumn: 'span 4' }}>
+                    <Box key={item.id} sx={{ gridColumn: 'span 4' }} >
                         <ItemCard data={
                             item
                         } />

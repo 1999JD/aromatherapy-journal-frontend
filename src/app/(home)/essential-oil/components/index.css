@@ -1,0 +1,7 @@
+.select-tags .MuiChip-action {
+    background-color: unset;
+}
+
+.select-tags .MuiChip-action:hover {
+    background-color: unset;
+}

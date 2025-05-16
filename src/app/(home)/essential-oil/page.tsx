@@ -28,7 +28,7 @@ export default function EssentialOilList() {
                         <FormControl>
                             <SelectMultipleAppearance />
                         </FormControl>
-                        <Button>送出</Button>
+                        <Button>Search</Button>
                     </Stack>
                 </form>
             </Box>

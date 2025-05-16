@@ -1,38 +1,39 @@
 'use client'
 import * as React from 'react';
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import { Box, Chip } from '@mui/joy';
+import { X as Close } from 'lucide-react'
+import { Autocomplete, Box, Chip } from '@mui/joy';
+import { useGetTagList } from '@/app/hooks/api/useTags';
+import './index.css'
 
 export default function SelectMultipleAppearance() {
+    const { data: option } = useGetTagList()
+
+
     return (
-        <Select
+        <Autocomplete
             multiple
-            defaultValue={['dog', 'cat']}
-            renderValue={(selected) => (
-                <Box sx={{
-                    display: 'flex', gap: '0.25rem', width: '360px'
-                }}>
-                    {selected.map((selectedOption) => (
-                        <Chip variant="soft" color="primary">
-                            {selectedOption.label}
-                        </Chip>
-                    ))}
-                </Box>
-            )}
-            sx={{ minWidth: '15rem' }}
-            slotProps={{
-                listbox: {
-                    sx: {
-                        width: '100%',
-                    },
-                },
-            }}
-        >
-            <Option value="dog">Dog</Option>
-            <Option value="cat">Cat</Option>
-            <Option value="fish">Fish</Option>
-            <Option value="bird">Bird</Option>
-        </Select>
+            id="tags-default"
+            placeholder="Select tags"
+            className={'select-tags'}
+            options={option || []}
+            getOptionLabel={(option) => option.name}
+            renderTags={(tags, getTagProps) =>
+                tags.map((item, index) => (
+                    <Chip
+                        {...getTagProps({ index })}
+                        variant="solid"
+                        color="primary"
+                        endDecorator={<Close className="w-4" />}
+                        sx={{
+                            backgroundColor: item.color,
+                            color: 'black'
+                        }}
+                        key={item.name}
+                    >
+                        {item.name}
+                    </Chip>
+                ))}
+        />
+
     );
 }

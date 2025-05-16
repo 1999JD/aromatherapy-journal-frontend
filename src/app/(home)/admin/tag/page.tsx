@@ -1,66 +1,26 @@
 import { Box, Button, Chip, FormControl, FormHelperText, FormLabel, IconButton, Input, Typography } from "@mui/joy";
 import { Search, Plus } from 'lucide-react';
-import ChipDeleteIcon from "./components/ChipDeleteIcon";
-import AddForm from "./components/AddForm";
+import TagTable from "./components/TagTable";
 export default function AdminTag() {
     return (
         <div className="container mx-auto py-8 px-4 ">
-            <Typography level="h1"  sx={{marginBottom: '1rem'}} >Manage Global Tags</Typography>
-            <Input
-                size="sm"
-                variant="outlined"
-                placeholder="Search keywords..."
-                startDecorator={<Search />}
-                sx={{
-                    alignSelf: 'center',
-                    display: {
-                        xs: 'none',
-                        sm: 'flex',
-                    },
-                    marginBottom: '1rem',
-                    width: '360px'
-                }}
-            />
+            <Typography level="h1" sx={{ marginBottom: '1rem' }} >Manage Global Tags</Typography>
+            <Box sx={{ display: 'flex' }}>
+                <Box
+                    component="main"
+                    sx={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        minWidth: 0,
+                        gap: 1,
+                    }}
+                >
+                    <TagTable />
+                </Box>
+            </Box>
 
-            <main className="">
-                <div className=" mb-4" >
-                    <Chip size="lg"
-                        endDecorator={
-                            <ChipDeleteIcon />
-                        }
-                        className="mx-0.5 my-0.5" >Stomache</Chip>
-                    <Chip size="lg"
-                        endDecorator={
-                            <ChipDeleteIcon />
-                        }
-                        className="mx-0.5 my-0.5">Head Ache</Chip>
-                    <Chip size="lg"
-                        endDecorator={
-                            <ChipDeleteIcon />
-                        }
-                        className="mx-0.5 my-0.5">sleep</Chip>
-                    <Chip size="lg"
-                        endDecorator={
-                            <ChipDeleteIcon />
-                        }
-                        className="mx-0.5 my-0.5">sleep</Chip>
-                    <Chip size="lg"
-                        endDecorator={
-                            <ChipDeleteIcon />
-                        }
-                        className="mx-0.5 my-0.5">atopic eczema</Chip>
-                    <Chip size="lg"
-                        endDecorator={
-                            <ChipDeleteIcon />
-                        }
-                        className="mx-0.5 my-0.5">atopic eczema</Chip>
-                </div>
-
-
-                <AddForm></AddForm>
-            </main>
-
-        </div>
+        </div >
     );
 }
 
