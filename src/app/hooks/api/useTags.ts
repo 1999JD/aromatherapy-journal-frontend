@@ -39,7 +39,7 @@ export const queryKey = {
 
 
 export interface TagVO {
-    id: string
+    id: string | number
     name: string
     color: string
 }
@@ -56,7 +56,6 @@ const useGetTagList = () => {
         queryKey: queryKey.list(),
         queryFn: () => fetchTag(),
         select: (data) => {
-            console.log('useGetTagList', mockData)
             return data
         },
     })

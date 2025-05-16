@@ -138,7 +138,7 @@ export default function TagTable() {
                                     checked={selected.length === rows?.length}
                                     onChange={(event) => {
                                         setSelected(
-                                            event.target.checked ? rows.map((row) => String(row.id)) : [],
+                                            event.target.checked ? rows.map((row) => row.id) : [],
                                         );
                                     }}
                                     color={
@@ -162,13 +162,13 @@ export default function TagTable() {
                                 <td className="text-center" >
                                     <Checkbox
                                         size="sm"
-                                        checked={selected.includes(String(row.id))}
-                                        color={selected.includes(String(row.id)) ? 'primary' : undefined}
+                                        checked={selected.includes(row.id)}
+                                        color={selected.includes(row.id) ? 'primary' : undefined}
                                         onChange={(event) => {
                                             setSelected((ids) =>
                                                 event.target.checked
-                                                    ? ids.concat(String(row.id))
-                                                    : ids.filter((itemId) => itemId !== String(row.id)),
+                                                    ? ids.concat(row.id)
+                                                    : ids.filter((itemId) => itemId !== row.id),
                                             );
                                         }}
                                         slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}

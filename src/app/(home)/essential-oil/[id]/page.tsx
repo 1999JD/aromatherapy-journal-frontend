@@ -1,9 +1,19 @@
+'use client'
 import { Stack, Box, IconButton, Button, Chip, Divider, Typography } from "@mui/joy";
 import CustomEditor from "./components/CustomEditor";
 import Link from "next/link"
 import { MoveLeft } from "lucide-react";
+import TagEditor from "./components/TagEditor";
+import { useGetEssentialOilDetail } from "@/app/hooks/api/useEssentialOil";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function EssentialOilView() {
+
+
+    const { id } = useParams()
+    const { data, isLoading, error } = useGetEssentialOilDetail(id as string | undefined)
+
     return (
         <div className="container mx-auto py-8 px-4 ">
             <Stack direction={'row'} alignItems={'center'} justifyContent={'space-between'} >
@@ -24,7 +34,7 @@ export default function EssentialOilView() {
                     <Typography level="h2"
                         sx={{ marginBottom: '1rem' }}
                     >
-                        Highland Lavender
+                        {data?.title}
                     </Typography>
                     <Typography level="body-sm"
                         sx={{
@@ -32,19 +42,9 @@ export default function EssentialOilView() {
                         }}
                         className="line-clamp-3"
                         style={{ display: '-webkit-box' }}>
-                        Highland True Lavender Essential Oil is distilled from Lavandula angustifolia grown at high altitudes.
-                        Its gentle floral aroma promotes deep relaxation and emotional balance.
-                        Rich in esters, it soothes the skin and supports restful sleep.
-                        Ideal for aromatherapy, skincare, and natural stress relief.
+                        {data?.description}
                     </Typography>
-                    <div className="line-clamp-2 " >
-                        <Chip className="mx-0.5 my-0.5" >Stomache</Chip>
-                        <Chip className="mx-0.5 my-0.5">Head Ache</Chip>
-                        <Chip className="mx-0.5 my-0.5">sleep</Chip>
-                        <Chip className="mx-0.5 my-0.5">sleep</Chip>
-                        <Chip className="mx-0.5 my-0.5">atopic eczema</Chip>
-                        <Chip className="mx-0.5 my-0.5">atopic eczema</Chip>
-                    </div>
+                    <TagEditor tags={data?.tags || []} />
                 </Box>
                 <Box >
                     <CustomEditor />
