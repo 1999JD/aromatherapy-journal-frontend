@@ -1,5 +1,5 @@
 'use client'
-import { Stack, Box, IconButton, Button, Chip, Divider, Typography } from "@mui/joy";
+import { Stack, Box,  Button, Chip, Divider, Typography } from "@mui/joy";
 import CustomEditor from "./components/CustomEditor";
 import Link from "next/link"
 import { MoveLeft } from "lucide-react";
@@ -34,7 +34,7 @@ export default function EssentialOilView() {
                     <Typography level="h2"
                         sx={{ marginBottom: '1rem' }}
                     >
-                        {data?.title}
+                        {data?.name}
                     </Typography>
                     <Typography level="body-sm"
                         sx={{
@@ -42,7 +42,7 @@ export default function EssentialOilView() {
                         }}
                         className="line-clamp-3"
                         style={{ display: '-webkit-box' }}>
-                        {data?.description}
+                        {data?.note}
                     </Typography>
                     <TagEditor tags={data?.tags || []} />
                 </Box>

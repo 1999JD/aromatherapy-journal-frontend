@@ -1,6 +1,6 @@
 'use client'
 import { useGetEssentialOilList } from '@/app/hooks/api/useEssentialOil'
-import { TagVO, useGetTagList } from '@/app/hooks/api/useTags'
+import { TagVO, useGetTagList } from '@/app/hooks/api/useTag'
 import { Box, Button, Chip, FormControl, FormHelperText, FormLabel, IconButton, Input, Typography } from "@mui/joy";
 import ChipDelete from '@mui/joy/ChipDelete';
 

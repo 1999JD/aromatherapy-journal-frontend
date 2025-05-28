@@ -27,7 +27,7 @@ import {
 } from 'lucide-react'
 import ColorPicker from '@/components/ColorPicker';
 
-import { useGetTagList } from '@/app/hooks/api/useTags';
+import { useGetTagList } from '@/app/hooks/api/useTag';
 
 
 
