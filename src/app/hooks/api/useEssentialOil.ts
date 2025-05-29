@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-
-const endpoint = `${process.env.API_BASE_PATH}/essential-oil`;
+import request from './request'
+const endpoint = `/essential-oil`;
 
 export const queryKey = {
   all: ["essential-oil"] as const,
@@ -27,18 +27,16 @@ export interface EssentialOilVO {
   }>;
 }
 
-const fetchEssentialOilList = async (): Promise<Array<EssentialOilVO>> => {
-  const response = await fetch(`${endpoint}`);
-  const data = await response.json();
-  return data;
+const fetchEssentialOilList = async () => {
+  const response = await request.get<any, Promise<Array<EssentialOilVO>>>(`${endpoint}`);
+  return response
 };
 
 const fetchEssentialOilDetail = async (
   id: string | number
-): Promise<EssentialOilVO | undefined> => {
-  const response = await fetch(`${endpoint}/${id}`);
-  const data = await response.json();
-  return data;
+) => {
+  const response = await request.get<any, Promise<EssentialOilVO>>(`${endpoint}/${id}`);
+  return response
 };
 
 const useGetEssentialOilList = () => {

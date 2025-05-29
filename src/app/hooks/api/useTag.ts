@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import request from './request'
 
-const endpoint = `${process.env.API_BASE_PATH}/tag`;
+const endpoint = `tag`;
 
 export const queryKey = {
   all: ["tag"] as const,
@@ -16,10 +17,9 @@ export interface TagVO {
   color: string;
 }
 
-const fetchTag = async (): Promise<Array<TagVO>> => {
-  const response = await fetch(`${endpoint}`);
-  const data = await response.json()
-  return data;
+const fetchTag = async () => {
+  const response = await request.get<any, Promise<Array<TagVO>>>(`${endpoint}`);
+  return response;
 
 };
 

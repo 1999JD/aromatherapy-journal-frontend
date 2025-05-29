@@ -1,11 +1,7 @@
 'use client'
 import * as React from 'react';
-import { ColorPaletteProp } from '@mui/joy/styles';
-import Avatar from '@mui/joy/Avatar';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
-import Chip from '@mui/joy/Chip';
-import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Input from '@mui/joy/Input';
@@ -23,45 +19,17 @@ import {
     ArrowRight as KeyboardArrowRightIcon,
     ArrowLeft as KeyboardArrowLeftIcon,
     ListFilter as FilterAltIcon,
-    ChevronDown as ArrowDropDownIcon
+    ChevronDown as ArrowDropDownIcon,
+    Tag as TagIcon
 } from 'lucide-react'
 import ColorPicker from '@/components/ColorPicker';
-
-import { useGetTagList } from '@/app/hooks/api/useTag';
-
-
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-    order: Order,
-    orderBy: Key,
-): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string },
-) => number {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
+import { useGetPersonalTagList } from '@/app/hooks/api/usePersonalTag';
+import { Stack } from '@mui/joy';
 
 
 export default function TagTable() {
     const [selected, setSelected] = React.useState<readonly string[]>([]);
-    const { data: rows = [] } = useGetTagList()
-
-
-
+    const { data: rows = [] } = useGetPersonalTagList()
 
     return (
         <React.Fragment>
@@ -101,6 +69,9 @@ export default function TagTable() {
                     <Input size="sm" placeholder="Search" startDecorator={<SearchIcon />} />
                 </FormControl>
             </Box>
+            <div>
+
+            </div>
             <Sheet
                 className="OrderTableContainer"
                 variant="outlined"
@@ -138,7 +109,7 @@ export default function TagTable() {
                                     checked={selected.length === rows?.length}
                                     onChange={(event) => {
                                         setSelected(
-                                            event.target.checked ? rows.map((row) => row.id) : [],
+                                            event.target.checked ? rows.map((row) => String(row.id)) : [],
                                         );
                                     }}
                                     color={
@@ -162,13 +133,13 @@ export default function TagTable() {
                                 <td className="text-center" >
                                     <Checkbox
                                         size="sm"
-                                        checked={selected.includes(row.id)}
-                                        color={selected.includes(row.id) ? 'primary' : undefined}
+                                        checked={selected.includes(String(row.id))}
+                                        color={selected.includes(String(row.id)) ? 'primary' : undefined}
                                         onChange={(event) => {
                                             setSelected((ids) =>
                                                 event.target.checked
-                                                    ? ids.concat(row.id)
-                                                    : ids.filter((itemId) => itemId !== row.id),
+                                                    ? ids.concat(String(row.id))
+                                                    : ids.filter((itemId) => itemId !== String(row.id)),
                                             );
                                         }}
                                         slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
@@ -193,49 +164,29 @@ export default function TagTable() {
                         ))}
                     </tbody>
                 </Table>
-            </Sheet>
-            <Box
-                className="Pagination-laptopUp"
-                sx={{
-                    pt: 2,
-                    gap: 1,
-                    [`& .${iconButtonClasses.root}`]: { borderRadius: '50%' },
-                    display: {
-                        xs: 'none',
-                        md: 'flex',
-                    },
-                }}
-            >
-                <Button
-                    size="sm"
-                    variant="outlined"
-                    color="neutral"
-                    startDecorator={<KeyboardArrowLeftIcon />}
-                >
-                    Previous
-                </Button>
+                <Stack spacing={2}
+                    sx={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textAlign: 'center',
+                        marginTop: 4
+                    }}>
 
-                <Box sx={{ flex: 1 }} />
-                {['1', '2', '3', '…', '8', '9', '10'].map((page) => (
-                    <IconButton
-                        key={page}
-                        size="sm"
-                        variant={Number(page) ? 'outlined' : 'plain'}
-                        color="neutral"
-                    >
-                        {page}
-                    </IconButton>
-                ))}
-                <Box sx={{ flex: 1 }} />
-                <Button
-                    size="sm"
-                    variant="outlined"
-                    color="neutral"
-                    endDecorator={<KeyboardArrowRightIcon />}
-                >
-                    Next
-                </Button>
-            </Box>
+                    <div className="w-14" >
+                        <TagIcon className="w-full h-auto" />
+                    </div>
+
+                    <Typography level="h2" sx={{ fontSize: 'xl', mb: 0.5, fontWeight: 'bold' }}>
+                        No Tags
+                    </Typography>
+                    <Typography level="body-md">
+                        You don't have any tags yet.
+                    </Typography>
+
+
+                </Stack>
+
+            </Sheet>
         </React.Fragment >
     );
 }

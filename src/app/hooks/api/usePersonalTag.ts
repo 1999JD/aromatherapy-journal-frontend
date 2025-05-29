@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-
-const endpoint = `${process.env.API_BASE_PATH}/personal/tag`;
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import request from './request'
+import { queryKey as essentialOilQueryKey } from './useEssentialOil'
+const endpoint = `/personal/tag`;
 
 export const queryKey = {
   all: ["personal-tag"] as const,
@@ -16,12 +17,22 @@ export interface PersonalTagVO {
   color: string;
 }
 
-const fetchPersonalTag = async (): Promise<Array<PersonalTagVO>> => {
-  const response = await fetch(`${endpoint}`);
-  const data = await response.json()
-  return data;
+export interface PersonalTagForm {
+  name: string;
+  color: string;
+}
 
+const fetchPersonalTag = async () => {
+  const response = await request.get<Promise<Array<PersonalTagVO>>>(`${endpoint}`);
+  return response;
 };
+
+const postPersonalTag = async (data: PersonalTagForm) => {
+  const response = await request.post(endpoint, {
+    data: data
+  })
+  return response
+}
 
 const useGetPersonalTagList = () => {
   return useQuery({
@@ -33,4 +44,16 @@ const useGetPersonalTagList = () => {
   });
 };
 
-export { useGetPersonalTagList };
+const usePostPersonalTag = () => {
+  return useMutation({
+    mutationFn: postPersonalTag,
+    onSuccess: () => {
+      const queryClient = useQueryClient()
+      queryClient.invalidateQueries({
+        queryKey: essentialOilQueryKey.all
+      })
+    },
+  });
+};
+
+export { useGetPersonalTagList, usePostPersonalTag };
