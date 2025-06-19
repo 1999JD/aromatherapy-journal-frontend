@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-function useForm(initial: any) {
-    const [form, setForm] = useState(initial);
+function useForm<T>(initial: T) {
+    const [form, setForm] = useState<T>(initial);
 
     interface FormEventTarget {
         name: string;

@@ -14,32 +14,26 @@ import Link from '@mui/joy/Link';
 import Input from '@mui/joy/Input';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/joy/Stack';
-import {
-    MoonStar as DarkModeRoundedIcon,
-    Sun as LightModeRoundedIcon,
-    Badge as BadgeRoundedIcon
-} from 'lucide-react'
 import GoogleIcon from './components/GoogleIcon';
 import Image from 'next/image'
 import logo from '../../assets/android-chrome-192x192.png'
-
-interface FormElements extends HTMLFormControlsCollection {
-    email: HTMLInputElement;
-    password: HTMLInputElement;
-    persistent: HTMLInputElement;
-}
-interface SignInFormElement extends HTMLFormElement {
-    readonly elements: FormElements;
-}
+import LoginImage from '../../assets/login-image.png'
+import { SignUpForm, useSignUp } from '@/app/hooks/api/useAuth'
+import useForm from "@/app/hooks/useForm";
+import { useRouter } from 'next/navigation';
 
 
-const customTheme = extendTheme({});
 
-export default function SignInLayout({
+export default function SignUp({
     children
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const router = useRouter()
+    const { mutate: signUp } = useSignUp(router)
+    const { form, handleChange } = useForm<SignUpForm>({ username: '', password: '', email: '' });
+
+
     return (
         <>
             <GlobalStyles
@@ -58,6 +52,7 @@ export default function SignInLayout({
                     position: 'relative',
                     zIndex: 1,
                     display: 'flex',
+                    marginLeft: 'auto',
                     justifyContent: 'flex-end',
                     backdropFilter: 'blur(12px)',
                     backgroundColor: 'rgba(255 255 255 / 0.2)',
@@ -116,69 +111,48 @@ export default function SignInLayout({
                         <Stack sx={{ gap: 4, mb: 2 }}>
                             <Stack sx={{ gap: 1 }}>
                                 <Typography component="h1" level="h3">
-                                    Sign in
+                                    Sign up
                                 </Typography>
                                 <Typography level="body-sm">
-                                    New to company?{' '}
-                                    <Link href="#replace-with-a-link" level="title-sm">
-                                        Sign up!
+                                    Already have an account?{' '}
+                                    <Link href="/sign-in" level="title-sm">
+                                        Sign in!
                                     </Link>
                                 </Typography>
                             </Stack>
-                            <Button
-                                variant="soft"
-                                color="neutral"
-                                fullWidth
-                                startDecorator={<GoogleIcon />}
-                            >
-                                Continue with Google
-                            </Button>
                         </Stack>
-                        <Divider
-                            sx={(theme) => ({
-                                [theme.getColorSchemeSelector('light')]: {
-                                    color: { xs: '#FFF', md: 'text.tertiary' },
-                                },
-                            })}
-                        >
-                            or
-                        </Divider>
                         <Stack sx={{ gap: 4, mt: 2 }}>
                             <form
-                                onSubmit={(event: React.FormEvent<SignInFormElement>) => {
-                                    event.preventDefault();
-                                    const formElements = event.currentTarget.elements;
-                                    const data = {
-                                        email: formElements.email.value,
-                                        password: formElements.password.value,
-                                        persistent: formElements.persistent.checked,
-                                    };
-                                    alert(JSON.stringify(data, null, 2));
-                                }}
+                                onSubmit={
+                                    ((event) => {
+                                        event.preventDefault()
+                                        console.log(form)
+                                        signUp(form)
+                                    })}
                             >
                                 <FormControl required>
                                     <FormLabel>Email</FormLabel>
-                                    <Input type="email" name="email" />
+                                    <Input type="email" name="email"
+                                        value={form.email} onChange={handleChange}
+
+                                    />
+                                </FormControl>
+                                <FormControl required>
+                                    <FormLabel>Username</FormLabel>
+                                    <Input type="username" name="username"
+                                        value={form.username} onChange={handleChange}
+
+                                    />
                                 </FormControl>
                                 <FormControl required>
                                     <FormLabel>Password</FormLabel>
-                                    <Input type="password" name="password" />
+                                    <Input type="password" name="password"
+                                        value={form.password} onChange={handleChange}
+                                    />
                                 </FormControl>
                                 <Stack sx={{ gap: 4, mt: 2 }}>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                        }}
-                                    >
-                                        <Checkbox size="sm" label="Remember me" name="persistent" />
-                                        <Link level="title-sm" href="#replace-with-a-link">
-                                            Forgot your password?
-                                        </Link>
-                                    </Box>
                                     <Button type="submit" fullWidth>
-                                        Sign in
+                                        Sign up
                                     </Button>
                                 </Stack>
                             </form>
@@ -192,13 +166,13 @@ export default function SignInLayout({
                 </Box>
             </Box>
             <Box
-                sx={(theme) => ({
+                sx={() => ({
                     height: '100%',
                     position: 'fixed',
-                    right: 0,
+                    left: 0,
                     top: 0,
                     bottom: 0,
-                    left: { xs: 0, md: '50vw' },
+                    right: { xs: 0, md: '50vw' },
                     transition:
                         'background-image var(--Transition-duration), left var(--Transition-duration) !important',
                     transitionDelay: 'calc(var(--Transition-duration) + 0.1s)',
@@ -206,12 +180,7 @@ export default function SignInLayout({
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    backgroundImage:
-                        'url(https://images.unsplash.com/photo-1527181152855-fc03fc7949c8?auto=format&w=1000&dpr=2)',
-                    [theme.getColorSchemeSelector('dark')]: {
-                        backgroundImage:
-                            'url(https://images.unsplash.com/photo-1572072393749-3ca9c8ea0831?auto=format&w=1000&dpr=2)',
-                    },
+                    backgroundImage: `url(${LoginImage.src})`,
                 })}
             />
         </>
