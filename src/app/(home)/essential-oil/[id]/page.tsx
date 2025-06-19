@@ -11,6 +11,7 @@ import { FormControl, FormHelperText, FormLabel, IconButton, Input } from "@mui/
 import ColorPicker from '@/components/ColorPicker';
 import { useState } from "react";
 import useForm from "@/app/hooks/useForm";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 function AddForm({
@@ -19,7 +20,8 @@ function AddForm({
     openTagModal: boolean,
     setOpenTagModal: (arg: boolean) => void
 }) {
-    const { mutate: postPersonalTag } = usePostPersonalTag()
+    const queryClient = useQueryClient()
+    const { mutate: postPersonalTag } = usePostPersonalTag(queryClient)
     const { form, handleChange } = useForm({ name: '', color: '' });
 
 

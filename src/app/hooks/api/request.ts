@@ -10,11 +10,11 @@ const request = axios.create({
 });
 
 request.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-        // const accessToken = localStorage.getItem(TOKEN_KEY)
-        // if (accessToken) {
-        //   config.headers.Authorization = accessToken
-        // }
+    (config: InternalAxiosRequestConfig) => {        
+        const accessToken = window.localStorage.getItem('accessToken')
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`
+        }
         return config
     },
     (error: any) => {

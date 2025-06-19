@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import request from './request'
 import { queryKey as essentialOilQueryKey } from './useEssentialOil'
 const endpoint = `/personal/tag`;
@@ -44,15 +44,20 @@ const useGetPersonalTagList = () => {
   });
 };
 
-const usePostPersonalTag = () => {
+const usePostPersonalTag = (queryClient: QueryClient) => {
+    
+
+
   return useMutation({
     mutationFn: postPersonalTag,
     onSuccess: () => {
-      const queryClient = useQueryClient()
       queryClient.invalidateQueries({
         queryKey: essentialOilQueryKey.all
       })
     },
+    onError: (error) => {
+      console.error("Error posting personal tag:", error);
+    }
   });
 };
 

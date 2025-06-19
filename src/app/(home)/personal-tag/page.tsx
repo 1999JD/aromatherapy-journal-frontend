@@ -16,6 +16,7 @@ export default function AdminTag() {
                         gap: 1,
                     }}
                 >
+                    {/* 標籤列表 */}
                     <TagTable />
                 </Box>
             </Box>

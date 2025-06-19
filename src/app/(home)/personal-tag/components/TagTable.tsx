@@ -23,13 +23,14 @@ import {
     Tag as TagIcon
 } from 'lucide-react'
 import ColorPicker from '@/components/ColorPicker';
-import { useGetPersonalTagList } from '@/app/hooks/api/usePersonalTag';
+import { useGetPersonalTagList, usePostPersonalTag } from '@/app/hooks/api/usePersonalTag';
 import { Stack } from '@mui/joy';
 
 
 export default function TagTable() {
     const [selected, setSelected] = React.useState<readonly string[]>([]);
-    const { data: rows = [] } = useGetPersonalTagList()
+    const { data } = useGetPersonalTagList();
+    const rows = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
 
     return (
         <React.Fragment>
