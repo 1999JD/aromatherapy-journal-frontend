@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 function useForm<T>(initial: T) {
     const [form, setForm] = useState<T>(initial);
@@ -12,12 +12,14 @@ function useForm<T>(initial: T) {
         target: FormEventTarget;
     }
 
-    const handleChange = (e: FormChangeEvent) => {
-        const { name, value } = e.target;
-        setForm((prev: any) => ({ ...prev, [name]: value }));
+    const handleChange = (event: FormChangeEvent) => {
+        const { name, value } = event.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    return { form, handleChange };
+    const reset = () => setForm(initial);
+
+    return { form, handleChange, reset, setForm };
 }
 
-export default useForm
+export default useForm;

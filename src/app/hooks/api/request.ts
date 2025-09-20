@@ -1,8 +1,18 @@
-// utils/axiosInstance.ts
-import axios, { InternalAxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+
+type ErrorPayload = {
+    message?: string;
+    title?: string;
+    detail?: string;
+    errors?: Record<string, string[]>;
+};
+
+type ApiError = AxiosError<ErrorPayload>;
+
+const API_BASE_PATH = process.env.API_BASE_PATH ?? '/api';
 
 const request = axios.create({
-    baseURL: process.env.API_BASE_PATH,
+    baseURL: API_BASE_PATH,
     headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -10,62 +20,36 @@ const request = axios.create({
 });
 
 request.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {        
-        const accessToken = window.localStorage.getItem('accessToken')
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`
+    (config: InternalAxiosRequestConfig) => {
+        if (typeof window !== 'undefined') {
+            const accessToken = window.localStorage.getItem('accessToken');
+            if (accessToken) {
+                config.headers = config.headers || {};
+                (config.headers as Record<string, string>)['Authorization'] = `Bearer ${accessToken}`;
+            }
         }
-        return config
+        return config;
     },
-    (error: any) => {
-        return Promise.reject(error)
-    }
-)
+    (error: ApiError) => Promise.reject(error)
+);
 
-// 響應攔截器
 request.interceptors.response.use(
     (response: AxiosResponse) => {
-        // 檢查配置的響應類型是否為二進位制類型（'blob' 或 'arraybuffer'）, 如果是，直接返迴響應對象
-        // if (
-        //   response.config.responseType === 'blob' ||
-        //   response.config.responseType === 'arraybuffer'
-        // ) {
-        //   return response
-        // }
-
-        // const { code, result, message } = response.data
-        // const codeState = code.toString().substr(0, 3) // 狀態前三碼
-
-        // if (codeState === ResultEnum.SUCCESS) {
-        //   return result
-        // }
-
-        // ElMessage.error(message || '系統錯誤')
-        // return Promise.reject(new Error(message || 'Error'))
-        return response.data
+        if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+            return response;
+        }
+        return response.data;
     },
-    (error: any) => {
-        // 異常處理
-        console.error(error) // for debug
-        // if (error && error.response) {
-        //   const { code, message } = error.response.data
-        //   if (code === ResultEnum.TOKEN_INVALID) {
-        //     ElNotification({
-        //       title: '提示',
-        //       message: '登入階段已過期，請重新登入',
-        //       type: 'info',
-        //     })
-        //     useUserStoreHook()
-        //       .resetToken()
-        //       .then(() => {
-        //         location.reload()
-        //       })
-        //   } else {
-        //     ElMessage.error(message || '系統錯誤')
-        //   }
-        // }
-        return Promise.reject(error.message)
+    (error: ApiError) => {
+        const fallback = error.message ?? 'Request failed';
+        const payload = error.response?.data;
+        const message = payload?.message || payload?.title || payload?.detail || fallback;
+        if (payload?.errors) {
+            const details = Object.values(payload.errors).flat().join(' ');
+            return Promise.reject(new Error(`${message} ${details}`.trim()));
+        }
+        return Promise.reject(new Error(message));
     }
-)
+);
 
 export default request;

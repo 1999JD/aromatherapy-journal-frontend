@@ -1,64 +1,102 @@
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import request from './request'
-import { queryKey as essentialOilQueryKey } from './useEssentialOil'
-const endpoint = `/personal/tag`;
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import request from "./request";
+import { queryKey as essentialOilQueryKey } from "./useEssentialOil";
+import { ApiPersonalTagDto, PersonalTag } from "./types";
+
+export type { PersonalTag } from "./types";
+
+const endpoint = "/personal/tag";
 
 export const queryKey = {
   all: ["personal-tag"] as const,
   lists: () => [...queryKey.all, "list"] as const,
   list: (query?: unknown) => [...queryKey.lists(), query ?? ""] as const,
   shows: () => [...queryKey.all, "show"] as const,
-  show: (id: number) => [...queryKey.shows(), id] as const,
+  show: (id: number | string) => [...queryKey.shows(), id] as const,
 };
 
-export interface PersonalTagVO {
-  id: string | number;
+export type PersonalTagInput = {
   name: string;
   color: string;
-}
+};
 
-export interface PersonalTagForm {
-  name: string;
-  color: string;
-}
-
-const fetchPersonalTag = async () => {
-  const response = await request.get<Promise<Array<PersonalTagVO>>>(`${endpoint}`);
+const fetchPersonalTags = async (): Promise<PersonalTag[]> => {
+  const response = await request.get<any, ApiPersonalTagDto[]>(`${endpoint}`);
   return response;
 };
 
-const postPersonalTag = async (data: PersonalTagForm) => {
-  const response = await request.post(endpoint, {
-    data: data
-  })
-  return response
-}
+const createPersonalTag = async (
+  payload: PersonalTagInput
+): Promise<PersonalTag> => {
+  const response = await request.post<any, ApiPersonalTagDto>(
+    `${endpoint}`,
+    payload
+  );
+  return response;
+};
 
-const useGetPersonalTagList = () => {
-  return useQuery({
+const updatePersonalTag = async ({
+  id,
+  payload,
+}: {
+  id: number | string;
+  payload: Partial<PersonalTagInput>;
+}): Promise<PersonalTag> => {
+  const response = await request.put<any, ApiPersonalTagDto>(
+    `${endpoint}/${id}`,
+    payload
+  );
+  return response;
+};
+
+const deletePersonalTag = async (id: number | string) => {
+  await request.delete(`${endpoint}/${id}`);
+};
+
+const invalidateDependentQueries = (queryClient: QueryClient) => {
+  queryClient.invalidateQueries({ queryKey: queryKey.lists() });
+  queryClient.invalidateQueries({ queryKey: essentialOilQueryKey.all });
+};
+
+export const useGetPersonalTagList = () =>
+  useQuery({
     queryKey: queryKey.list(),
-    queryFn: () => fetchPersonalTag(),
-    select: (data) => {
-      return data;
-    },
+    queryFn: fetchPersonalTags,
   });
-};
 
-const usePostPersonalTag = (queryClient: QueryClient) => {
-    
-
-
+export const useCreatePersonalTag = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: postPersonalTag,
+    mutationFn: createPersonalTag,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: essentialOilQueryKey.all
-      })
+      invalidateDependentQueries(queryClient);
     },
-    onError: (error) => {
-      console.error("Error posting personal tag:", error);
-    }
   });
 };
 
-export { useGetPersonalTagList, usePostPersonalTag };
+export const useUpdatePersonalTag = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updatePersonalTag,
+    onSuccess: ({ id }) => {
+      invalidateDependentQueries(queryClient);
+      queryClient.invalidateQueries({ queryKey: queryKey.show(id) });
+    },
+  });
+};
+
+export const useDeletePersonalTag = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePersonalTag,
+    onSuccess: (_, id) => {
+      invalidateDependentQueries(queryClient);
+      queryClient.removeQueries({ queryKey: queryKey.show(id) });
+    },
+  });
+};

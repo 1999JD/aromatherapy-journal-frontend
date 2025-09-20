@@ -1,6 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
-import request from './request'
-const endpoint = `/essential-oil`;
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import request from "./request";
+import { ApiEssentialOilDto, EssentialOil } from "./types";
+
+export type { EssentialOil } from "./types";
+
+const endpoint = "/essential-oil";
 
 export const queryKey = {
   all: ["essential-oil"] as const,
@@ -8,57 +12,109 @@ export const queryKey = {
   list: (query?: Record<string, unknown>) =>
     [...queryKey.lists(), query ?? ""] as const,
   shows: () => [...queryKey.all, "show"] as const,
-  show: (id: number) => [...queryKey.shows(), id] as const,
+  show: (id: number | string) => [...queryKey.shows(), id] as const,
 };
 
-export interface EssentialOilVO {
-  id: number;
-  name: string;
-  note: string;
-  tags: Array<{
-    id: string | number;
-    name: string;
-    color: string;
-  }>;
-  personalTags: Array<{
-    id: string | number;
-    name: string;
-    color: string;
-  }>;
-}
+export type EssentialOilSummary = EssentialOil;
 
-const fetchEssentialOilList = async () => {
-  const response = await request.get<any, Promise<Array<EssentialOilVO>>>(`${endpoint}`);
-  return response
+export type EssentialOilCreateInput = {
+  name: string;
+  englishName: string;
+  scientificName?: string;
+  note?: string;
+  tags?: number[];
+  personalTags?: number[];
+};
+
+export type EssentialOilUpdateInput = Partial<EssentialOilCreateInput>;
+
+const fetchEssentialOilList = async (): Promise<EssentialOilSummary[]> => {
+  const response = await request.get<any, ApiEssentialOilDto[]>(`${endpoint}`);
+  return response;
 };
 
 const fetchEssentialOilDetail = async (
-  id: string | number
-) => {
-  const response = await request.get<any, Promise<EssentialOilVO>>(`${endpoint}/${id}`);
-  return response
+  id: number | string
+): Promise<EssentialOil> => {
+  const response = await request.get<any, ApiEssentialOilDto>(
+    `${endpoint}/${id}`
+  );
+  return response;
 };
 
-const useGetEssentialOilList = () => {
+const createEssentialOil = async (
+  payload: EssentialOilCreateInput
+): Promise<EssentialOil> => {
+  const response = await request.post<any, ApiEssentialOilDto>(
+    `${endpoint}`,
+    payload
+  );
+  return response;
+};
+
+const updateEssentialOil = async ({
+  id,
+  payload,
+}: {
+  id: number | string;
+  payload: EssentialOilUpdateInput;
+}): Promise<EssentialOil> => {
+  const response = await request.put<any, ApiEssentialOilDto>(
+    `${endpoint}/${id}`,
+    payload
+  );
+  return response;
+};
+
+const deleteEssentialOil = async (id: number | string) => {
+  await request.delete(`${endpoint}/${id}`);
+};
+
+export const useGetEssentialOilList = () => {
   return useQuery({
     queryKey: queryKey.list(),
-    queryFn: () => fetchEssentialOilList(),
-    select: (data) => {
-      return data;
-    },
+    queryFn: fetchEssentialOilList,
   });
 };
 
-const useGetEssentialOilDetail = (id?: number) => {
+export const useGetEssentialOilDetail = (id?: number | string) => {
   const numericId = typeof id === "string" ? Number(id) : id;
   return useQuery({
-    queryKey: queryKey.show(numericId!),
-    queryFn: () => fetchEssentialOilDetail(id!),
-    select: (data) => {
-      return data;
-    },
-    enabled: !!id,
+    queryKey: numericId ? queryKey.show(numericId) : queryKey.show("unknown"),
+    queryFn: () => fetchEssentialOilDetail(numericId!),
+    enabled: typeof numericId === "number" && !Number.isNaN(numericId),
   });
 };
 
-export { useGetEssentialOilList, useGetEssentialOilDetail };
+export const useCreateEssentialOil = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createEssentialOil,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKey.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKey.show(data.id) });
+    },
+  });
+};
+
+export const useUpdateEssentialOil = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updateEssentialOil,
+    onSuccess: ({ id }) => {
+      queryClient.invalidateQueries({ queryKey: queryKey.show(id) });
+      queryClient.invalidateQueries({ queryKey: queryKey.lists() });
+    },
+  });
+};
+
+export const useDeleteEssentialOil = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteEssentialOil,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: queryKey.lists() });
+      queryClient.removeQueries({ queryKey: queryKey.show(id) });
+    },
+  });
+};

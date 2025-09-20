@@ -8,29 +8,30 @@ import Input from '@mui/joy/Input';
 import Table from '@mui/joy/Table';
 import Sheet from '@mui/joy/Sheet';
 import Checkbox from '@mui/joy/Checkbox';
-import IconButton, { iconButtonClasses } from '@mui/joy/IconButton';
 import Typography from '@mui/joy/Typography';
-import {
-    Ellipsis as MoreHorizRoundedIcon,
-    Check as CheckRoundedIcon,
-    X as BlockIcon,
-    Search as SearchIcon,
-    RotateCw as AutorenewRoundedIcon,
-    ArrowRight as KeyboardArrowRightIcon,
-    ArrowLeft as KeyboardArrowLeftIcon,
-    ListFilter as FilterAltIcon,
-    ChevronDown as ArrowDropDownIcon,
-    Tag as TagIcon
-} from 'lucide-react'
-import ColorPicker from '@/components/ColorPicker';
-import { useGetPersonalTagList, usePostPersonalTag } from '@/app/hooks/api/usePersonalTag';
 import { Stack } from '@mui/joy';
-
+import {
+    Search as SearchIcon,
+    ListFilter as FilterAltIcon,
+    Tag as TagIcon,
+} from 'lucide-react';
+import ColorPicker from '@/components/ColorPicker';
+import {
+    useGetPersonalTagList,
+    useDeletePersonalTag,
+    PersonalTag,
+} from '@/app/hooks/api/usePersonalTag';
 
 export default function TagTable() {
     const [selected, setSelected] = React.useState<readonly string[]>([]);
-    const { data } = useGetPersonalTagList();
-    const rows = Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : [];
+    const { data: rows = [], isLoading } = useGetPersonalTagList();
+    const { mutate: deletePersonalTag, isPending: isDeleting } = useDeletePersonalTag();
+
+    const handleDelete = (tag: PersonalTag) => {
+        deletePersonalTag(tag.id);
+    };
+
+    const isEmpty = !isLoading && rows.length === 0;
 
     return (
         <React.Fragment>
@@ -38,19 +39,15 @@ export default function TagTable() {
                 className="SearchAndFilters-mobile"
                 sx={{ display: { xs: 'flex', sm: 'none' }, my: 1, gap: 1 }}
             >
-                <Input
-                    size="sm"
-                    placeholder="Search"
-                    startDecorator={<SearchIcon />}
-                />
-                <IconButton
+                <Input size="sm" placeholder="Search" startDecorator={<SearchIcon />} />
+                <Button
                     size="sm"
                     variant="outlined"
                     color="neutral"
+                    startDecorator={<FilterAltIcon />}
                 >
-                    <FilterAltIcon />
-                </IconButton>
-
+                    Filters
+                </Button>
             </Sheet>
             <Box
                 className="SearchAndFilters-tabletUp"
@@ -70,9 +67,7 @@ export default function TagTable() {
                     <Input size="sm" placeholder="Search" startDecorator={<SearchIcon />} />
                 </FormControl>
             </Box>
-            <div>
 
-            </div>
             <Sheet
                 className="OrderTableContainer"
                 variant="outlined"
@@ -96,21 +91,21 @@ export default function TagTable() {
                         '--TableCell-paddingY': '4px',
                         '--TableCell-paddingX': '8px',
                     }}
-
                 >
-
                     <thead>
                         <tr>
-                            <th style={{ width: 40, padding: '12px 6px', textAlign: 'center' }} >
+                            <th style={{ width: 40, padding: '12px 6px', textAlign: 'center' }}>
                                 <Checkbox
                                     size="sm"
                                     indeterminate={
                                         selected.length > 0 && selected.length !== rows.length
                                     }
-                                    checked={selected.length === rows?.length}
+                                    checked={rows.length > 0 && selected.length === rows.length}
                                     onChange={(event) => {
                                         setSelected(
-                                            event.target.checked ? rows.map((row) => String(row.id)) : [],
+                                            event.target.checked
+                                                ? rows.map((row) => String(row.id))
+                                                : [],
                                         );
                                     }}
                                     color={
@@ -121,17 +116,15 @@ export default function TagTable() {
                                     sx={{ verticalAlign: 'text-bottom' }}
                                 />
                             </th>
-                            <th style={{ width: 120, padding: '12px 6px' }}>
-                                Name
-                            </th>
+                            <th style={{ width: 120, padding: '12px 6px' }}>Name</th>
                             <th style={{ width: 140, padding: '12px 6px' }}>Color</th>
                             <th style={{ maxWidth: 120, width: 140, padding: '12px 6px' }}> </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {[...rows].map((row) => (
+                        {rows.map((row) => (
                             <tr key={row.id}>
-                                <td className="text-center" >
+                                <td className="text-center">
                                     <Checkbox
                                         size="sm"
                                         checked={selected.includes(String(row.id))}
@@ -148,46 +141,52 @@ export default function TagTable() {
                                     />
                                 </td>
                                 <td>
-                                    <Typography level="body-xs">{row.name}</Typography>
+                                    <Typography level="body-sm">{row.name}</Typography>
                                 </td>
                                 <td>
-                                    <Typography level="body-xs">
-                                        <ColorPicker value={row.color} readonly={true} />
-                                    </Typography>
+                                    <ColorPicker value={row.color} readonly />
                                 </td>
                                 <td>
                                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', width: '100%' }}>
-                                        <Button variant="plain" color="primary" >Edit</Button>
-                                        <Button variant="plain" color="danger">Delete</Button>
+                                        <Button variant="plain" color="primary" disabled>
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="plain"
+                                            color="danger"
+                                            onClick={() => handleDelete(row)}
+                                            loading={isDeleting}
+                                        >
+                                            Delete
+                                        </Button>
                                     </Box>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
-                <Stack spacing={2}
-                    sx={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        textAlign: 'center',
-                        marginTop: 4
-                    }}>
-
-                    <div className="w-14" >
-                        <TagIcon className="w-full h-auto" />
-                    </div>
-
-                    <Typography level="h2" sx={{ fontSize: 'xl', mb: 0.5, fontWeight: 'bold' }}>
-                        No Tags
-                    </Typography>
-                    <Typography level="body-md">
-                        You don't have any tags yet.
-                    </Typography>
-
-
-                </Stack>
-
+                {isEmpty && (
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            py: 6,
+                        }}
+                    >
+                        <div className="w-14">
+                            <TagIcon className="w-full h-auto" />
+                        </div>
+                        <Typography level="h2" sx={{ fontSize: 'xl', fontWeight: 'bold' }}>
+                            No Tags
+                        </Typography>
+                        <Typography level="body-md">
+                            You don't have any tags yet.
+                        </Typography>
+                    </Stack>
+                )}
             </Sheet>
-        </React.Fragment >
+        </React.Fragment>
     );
 }
