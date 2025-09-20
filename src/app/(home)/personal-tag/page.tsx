@@ -4,7 +4,7 @@ import TagTable from "./components/TagTable";
 export default function AdminTag() {
     return (
         <div className="container mx-auto py-8 px-4 ">
-            <Typography level="h1" sx={{ marginBottom: '1rem' }} >Personal Tags</Typography>
+            <Typography level="h1" sx={{ marginBottom: '1rem' }} >My Tags</Typography>
             <Box sx={{ display: 'flex' }}>
                 <Box
                     component="main"
@@ -16,6 +16,7 @@ export default function AdminTag() {
                         gap: 1,
                     }}
                 >
+                    {/* 標籤列表 */}
                     <TagTable />
                 </Box>
             </Box>

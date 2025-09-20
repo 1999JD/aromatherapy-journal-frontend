@@ -10,12 +10,14 @@ export default function ColorPicker({
     label,
     error,
     helperText,
+    name,
     readonly
 }: {
     value?: string
     onChange?: (value: string) => void
     label?: string
     error?: boolean
+    name?: string
     helperText?: string
     readonly?: boolean
 }) {
@@ -32,26 +34,18 @@ export default function ColorPicker({
                 <p>{value}</p>
             </Box>
             :
-            <FormControl>
-                <FormLabel>Choose color</FormLabel>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <input
-                        type="color"
-                        value={value}
-                        onChange={(e) => onChange && onChange(e.target.value)}
-                        style={{
-                            flexShrink: 0,
-                            display: 'block',
-                            width: 24,
-                            height: 24,
-                            border: 'none',
-                            padding: 0,
-                            background: 'none',
-                        }}
-                    />
-                    <Input value={value} onChange={(e) => onChange && onChange(e.target.value)} />
-
-                </Box>
-            </FormControl >
+            <input
+                type="color"
+                name={name}
+                value={value}
+                onChange={(e) => onChange && onChange(e.target.value)}
+                style={{
+                    flexShrink: 0,
+                    display: 'block',
+                    border: 'none',
+                    padding: 0,
+                    background: 'none',
+                }}
+            />
     );
 }

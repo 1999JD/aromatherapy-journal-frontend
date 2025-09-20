@@ -1,5 +1,5 @@
 'use client'
-import { Box, IconButton, Input, Typography, Chip } from "@mui/joy";
+import { Box, IconButton, Typography, Chip } from "@mui/joy";
 import { useGetEssentialOilList } from "@/app/hooks/api/useEssentialOil"
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
@@ -17,11 +17,11 @@ function ItemCard({ data }: {
         <Card variant="outlined" >
             <CardContent>
                 <Typography level="title-md">
-                    {data.title}
+                    {data.name}
                 </Typography>
                 <Typography level="body-sm" className="line-clamp-3"
                     style={{ display: '-webkit-box' }}>
-                    {data.description}
+                    {data.note}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
 
@@ -57,6 +57,7 @@ function ItemCard({ data }: {
                             sx={{
                                 backgroundColor: tag.color,
                                 margin: 0.25,
+                            
                             }}
                         >
                             {tag.name}

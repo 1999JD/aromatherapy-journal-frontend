@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { X as Close } from 'lucide-react'
 import { Autocomplete, Box, Chip } from '@mui/joy';
-import { useGetTagList } from '@/app/hooks/api/useTags';
+import { useGetTagList } from '@/app/hooks/api/useTag';
 import './index.css'
 
 export default function SelectMultipleAppearance() {
