@@ -1,6 +1,6 @@
-import { Box, Button, Chip, FormControl, FormHelperText, FormLabel, IconButton, Input, Typography } from "@mui/joy";
-import { Search, Plus } from 'lucide-react';
+import { Box, Typography } from "@mui/joy";
 import TagTable from "./components/TagTable";
+
 export default function AdminTag() {
     return (
         <div className="container mx-auto py-8 px-4 ">
@@ -19,8 +19,6 @@ export default function AdminTag() {
                     <TagTable />
                 </Box>
             </Box>
-
         </div >
     );
 }
-

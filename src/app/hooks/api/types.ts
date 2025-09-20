@@ -30,7 +30,10 @@ export type ApiRegisterDto = ApiNewUserDto;
 
 export type ApiPagedResponse<T> = {
     items: T[];
+    pageNumber: number;
+    pageSize: number;
     totalCount: number;
+    totalPages: number;
 };
 
 export type Tag = {

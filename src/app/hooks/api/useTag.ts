@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import request from "./request";
-import { ApiTagDto, Tag } from "./types";
+import { ApiPagedResponse, ApiTagDto, Tag } from "./types";
 
 export type { Tag } from "./types";
 
@@ -19,9 +19,32 @@ export type TagInput = {
   color: string;
 };
 
-const fetchTags = async (): Promise<Tag[]> => {
-  const response = await request.get<any, ApiTagDto[]>(`${endpoint}`);
-  return response;
+export type TagListParams = {
+  pageNumber?: number;
+  pageSize?: number;
+};
+
+export type TagListResponse = ApiPagedResponse<Tag>;
+
+const fetchTags = async (params: TagListParams = {}): Promise<TagListResponse> => {
+  const { pageNumber = 1, pageSize = 10 } = params;
+  const response = await request.get<any, ApiPagedResponse<ApiTagDto>>(`${endpoint}`, {
+    params: { pageNumber, pageSize },
+  });
+
+  return {
+    ...response,
+    items:
+      response.items?.map((tag) => ({
+        id: tag.id,
+        name: tag.name,
+        color: tag.color,
+      })) ?? [],
+    pageNumber: response.pageNumber,
+    pageSize: response.pageSize,
+    totalCount: response.totalCount,
+    totalPages: response.totalPages,
+  };
 };
 
 const createTag = async (payload: TagInput): Promise<Tag> => {
@@ -47,11 +70,13 @@ const deleteTag = async (id: number | string) => {
   await request.delete(`${endpoint}/${id}`);
 };
 
-export const useGetTagList = () =>
-  useQuery({
-    queryKey: queryKey.list(),
-    queryFn: fetchTags,
+export const useGetTagList = (params?: TagListParams) => {
+  const queryParams = params ?? {};
+  return useQuery({
+    queryKey: queryKey.list(queryParams),
+    queryFn: () => fetchTags(queryParams),
   });
+};
 
 export const useCreateTag = () => {
   const queryClient = useQueryClient();
